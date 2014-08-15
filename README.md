@@ -1,4 +1,4 @@
 civs-browser
 ============
 
-A web application to visualize the history files produced by csv
+A web application to visualize the history files produced by [civs](https://github.com/ftomassetti/civs/)
