@@ -14,3 +14,5 @@ pom.xml.asc
 .lein-repl-history
 .lein-plugins/
 .lein-failures
+.idea
+*.iml
