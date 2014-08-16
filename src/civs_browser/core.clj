@@ -1,32 +1,94 @@
 (ns civs-browser.core
+  ^{:author ftomassetti}
   (:use compojure.core)
   (:use hiccup.core)
   (:use hiccup.page)
   (:use ring.adapter.jetty)
+  (:require
+    [clojure.tools.cli :refer [parse-opts]]
+    [clojure.string :as string]
+    [civs.io :refer :all]
+    [clojure.edn :as edn]
+    [civs-browser.basic :refer :all]
+    [civs-browser.model :refer :all]
+    [civs-browser.views :refer :all])
   (:gen-class))
 
-(defn view-layout [& content]
-  (html
-    (doctype :xhtml-strict)
-    (xhtml-tag "en"
-      [:head
-       [:meta {:http-equiv "Content-type"
-               :content "text/html; charset=utf-8"}]
-       [:title "Civs-Browser"]]
-      [:body content])))
-
-(defn homepage []
-  (view-layout
-    [:h1 "Welcome to Civs-Browser!"]))
+(def cli-options
+  ;; An option with a required argument
+  [
+    ["-f" "--history-filename HISTORY_FILENAME" "History file to be used"]
+    ["-h" "--help"]
+    ["-w" "--worlds-dir WORLD_DIR" "Dir containing world files"
+     :default ""]
+  ])
 
 (defn parse-input [a b]
   [(Integer/parseInt a) (Integer/parseInt b)])
 
 (defroutes app
   (GET "/" []
-    (homepage)))
+    (homepage))
+  (GET "/raw" []
+    (raw)))
+
+(defn failure [msg]
+  (binding [*out* *err*]
+    (println "Error:" msg)
+    (println "")
+    (println "Use -h for help")
+    (println "Exit."))
+  (System/exit 1))
+
+(defn usage [options-summary]
+  (println (->> ["This program run a browser to explore results of simulations of civilizations evolution and struggling"
+                 ""
+                 "Usage: [lein run] civs-browser [options]"
+                 ""
+                 "Options:"
+                 options-summary
+                 ""
+                 "Feel free to ask all possible questions on https://github.com/ftomassetti/civs-browser (just open an issue!)"]
+             (string/join \newline)))
+  (System/exit 0))
+
+(defn load-history-file-edn [history-filename]
+  (let [ edn-str (slurp history-filename)
+         resolver (dir-lists-resolver [""])
+         history (from-serialized-str edn-str {:resolver resolver})]
+    history))
+
+(defn error-throwing-dir-lists-resolver
+  "Resolver using cache, adding extension and throwing exception when not found"
+  [world-dir]
+  (let [wrapped (dir-lists-resolver [world-dir])
+        cache (atom {})]
+    (fn [filename]
+      (if (get (deref cache) filename)
+        (get (deref cache) filename)
+        (let [res-from-wrapped (wrapped (str filename ".world"))]
+          (if (nil? res-from-wrapped)
+            (failure (str "Cannot load " filename))
+            (do
+              (swap! cache assoc filename res-from-wrapped)
+              res-from-wrapped)))))))
+
+(defn load-history-file-fressian [history-filename worlds-dir]
+  (load-simulation-result-fressian history-filename
+    (error-throwing-dir-lists-resolver worlds-dir)))
+
+(defn run [history]
+  (set-history history)
+  (run-jetty #'civs-browser.core/app {:port 8080}))
 
 (defn -main [& args]
-
-  (run-jetty #'civs-browser.core/app {:port 8080}))
+  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
+    (cond
+      (nil? (:history-filename options))
+      (failure "History file to be used not specified (option -f missing)")
+      (:help options)
+      (usage summary)
+      errors (failure errors))
+    (let [history (load-history-file-fressian (:history-filename options) (:worlds-dir options))]
+      (run history))))
 
