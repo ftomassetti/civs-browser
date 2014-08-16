@@ -18,3 +18,6 @@
 
 (defn tribes-ids [history]
   (reduce (fn [acc game] (into acc (keys (:tribes game)))) #{} (vals (:game-snapshots history))))
+
+(defn exist-tribe? [history tribe-id]
+  (contains? (tribes-ids history) tribe-id))

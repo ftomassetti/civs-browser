@@ -8,5 +8,6 @@
 (deftest test-n-turns
   (is (= 100 (n-turns my-history))))
 
-;(deftest test-tribes-ids
-;  (let [res (tribes-ids my-history)])
+(deftest test-exist-tribe?
+  (is (= true (exist-tribe? my-history 1)))
+  (is (= false (exist-tribe? my-history 123456))))

@@ -36,6 +36,13 @@
     [:p (str "No. turns: " (n-turns history))]
     [:p "View " (link-to "tribes" "Tribes")]))
 
+(defn tribe-page [tribe-id]
+  (view-layout
+    [:h1 (str "Civs-Browser: Group " tribe-id)]
+    (if (exist-tribe? history tribe-id)
+      [:p "This group exists"]
+      [:p "This group does not exist"])))
+
 (defn raw []
   (view-layout
     [:h1 "Civs-Browser: Raw view of the history file"]

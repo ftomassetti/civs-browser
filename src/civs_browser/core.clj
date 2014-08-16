@@ -32,7 +32,9 @@
   (GET "/raw" []
     (raw))
   (GET "/tribes" []
-    (tribes-homepage)))
+    (tribes-homepage))
+  (GET ["/tribe/:id", :id #"[0-9]+"] [id]
+    (tribe-page (read-string id))))
 
 (defn failure [msg]
   (binding [*out* *err*]
