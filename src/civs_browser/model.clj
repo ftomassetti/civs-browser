@@ -25,6 +25,36 @@
       (fn [[turn game]] (contains? (groups-ids-in-game game) group-id))
       (:game-snapshots history))))
 
+(defn game-at [history turn]
+  (get (:game-snapshots history) turn))
+
+(defn group-at [history turn group-id]
+  (get (:tribes (game-at history turn)) group-id))
+
+(defn group-position-at [history turn group-id]
+  (let [ga (game-at history turn)
+        gr (group-at history turn group-id)]
+    (.position gr)))
+
+(defn group-positions-in-time [history group-id]
+  (into {}
+    (map
+      (fn [turn] [turn (group-position-at history turn group-id)])
+      (games-in-which-group-is-alive history group-id))))
+
+(defn distinct-group-positions-in-time [history group-id]
+  (let [pos-in-time (sort (group-positions-in-time history group-id))
+        current-mov (first pos-in-time)
+        current-pos (get current-mov 1)
+        next-mov (rest pos-in-time)]
+    (get (reduce
+      (fn [[current-pos movements-done] mov]
+        (let [target-pos (get mov 1)]
+          (if (= current-pos target-pos)
+            [current-pos movements-done]
+            [target-pos (conj movements-done mov)])))
+      [current-pos [current-mov]] next-mov) 1)))
+
 (defn first-turn-for-group [history group-id]
   (apply min (games-in-which-group-is-alive history group-id)))
 
