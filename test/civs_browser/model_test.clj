@@ -8,6 +8,6 @@
 (deftest test-n-turns
   (is (= 100 (n-turns my-history))))
 
-(deftest test-exist-tribe?
-  (is (= true (exist-tribe? my-history 1)))
-  (is (= false (exist-tribe? my-history 123456))))
+(deftest test-exist-group?
+  (is (= true (exist-group? my-history 1)))
+  (is (= false (exist-group? my-history 123456))))

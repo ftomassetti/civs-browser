@@ -16,8 +16,23 @@
 (defn n-turns [history]
   (.size (keys (:facts history))))
 
-(defn tribes-ids [history]
-  (reduce (fn [acc game] (into acc (keys (:tribes game)))) #{} (vals (:game-snapshots history))))
+(defn groups-ids-in-game [game]
+  (into #{} (keys (:tribes game))))
 
-(defn exist-tribe? [history tribe-id]
-  (contains? (tribes-ids history) tribe-id))
+(defn games-in-which-group-is-alive [history group-id]
+  (keys
+    (filter
+      (fn [[turn game]] (contains? (groups-ids-in-game game) group-id))
+      (:game-snapshots history))))
+
+(defn first-turn-for-group [history group-id]
+  (apply min (games-in-which-group-is-alive history group-id)))
+
+(defn last-turn-for-group [history group-id]
+  (apply max (games-in-which-group-is-alive history group-id)))
+
+(defn groups-ids [history]
+  (reduce (fn [acc game] (into acc (groups-ids-in-game game))) #{} (vals (:game-snapshots history))))
+
+(defn exist-group? [history tribe-id]
+  (contains? (groups-ids history) tribe-id))

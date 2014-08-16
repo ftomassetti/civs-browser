@@ -27,7 +27,7 @@
 (defn tribes-homepage []
   (view-layout
     [:h1 "Civs-Browser: Tribes homepage"]
-    (for [tribe-id (sort (tribes-ids history))]
+    (for [tribe-id (sort (groups-ids history))]
       [:p "View " (link-to (str "tribe/" tribe-id) (str "Tribe " tribe-id))])))
 
 (defn homepage []
@@ -36,11 +36,16 @@
     [:p (str "No. turns: " (n-turns history))]
     [:p "View " (link-to "tribes" "Tribes")]))
 
+(defn- group-page-content [group-id]
+  (let [ft (first-turn-for-group history group-id)
+        lt (last-turn-for-group history group-id)]
+  [:p (str "Alive from " ft " to " lt)]))
+
 (defn tribe-page [tribe-id]
   (view-layout
     [:h1 (str "Civs-Browser: Group " tribe-id)]
-    (if (exist-tribe? history tribe-id)
-      [:p "This group exists"]
+    (if (exist-group? history tribe-id)
+      (group-page-content tribe-id)
       [:p "This group does not exist"])))
 
 (defn raw []
