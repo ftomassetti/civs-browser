@@ -3,6 +3,7 @@
   (:use compojure.core)
   (:use hiccup.core)
   (:use hiccup.page)
+  (:use hiccup.element)
   (:use ring.adapter.jetty)
   (:require
     [clojure.tools.cli :refer [parse-opts]]
@@ -12,7 +13,6 @@
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all])
   (:gen-class))
-
 
 (defn view-layout [& content]
   (html
@@ -24,13 +24,19 @@
        [:title "Civs-Browser"]]
       [:body content])))
 
+(defn tribes-homepage []
+  (view-layout
+    [:h1 "Civs-Browser: Tribes homepage"]
+    (for [tribe-id (sort (tribes-ids history))]
+      [:p "View " (link-to (str "tribe/" tribe-id) (str "Tribe " tribe-id))])))
+
 (defn homepage []
   (view-layout
-    [:h1 "Welcome to Civs-Browser!"]
+    [:h1 "Civs-Browser: Homepage"]
     [:p (str "No. turns: " (n-turns history))]
-    [:p (str "Facts: " (.size (:facts history)))]))
+    [:p "View " (link-to "tribes" "Tribes")]))
 
 (defn raw []
   (view-layout
-    [:h1 "Civs-Browser: raw view of the history file"]
+    [:h1 "Civs-Browser: Raw view of the history file"]
     [:p (str history)]))

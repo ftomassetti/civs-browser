@@ -30,7 +30,9 @@
   (GET "/" []
     (homepage))
   (GET "/raw" []
-    (raw)))
+    (raw))
+  (GET "/tribes" []
+    (tribes-homepage)))
 
 (defn failure [msg]
   (binding [*out* *err*]

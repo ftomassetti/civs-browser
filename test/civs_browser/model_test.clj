@@ -7,3 +7,6 @@
 
 (deftest test-n-turns
   (is (= 100 (n-turns my-history))))
+
+;(deftest test-tribes-ids
+;  (let [res (tribes-ids my-history)])
