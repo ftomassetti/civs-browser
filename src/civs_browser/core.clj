@@ -8,6 +8,7 @@
     [clojure.tools.cli :refer [parse-opts]]
     [clojure.string :as string]
     [civs.io :refer :all]
+    [civs.model :refer :all]
     [clojure.edn :as edn]
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
@@ -33,6 +34,8 @@
     (raw))
   (GET "/tribes" []
     (tribes-homepage))
+  (GET "/ancient-map.png" []
+    (world-ancient-map-view))
   (GET ["/tribe/:id", :id #"[0-9]+"] [id]
     (tribe-page (read-string id))))
 
@@ -70,12 +73,13 @@
     (fn [filename]
       (if (get (deref cache) filename)
         (get (deref cache) filename)
-        (let [res-from-wrapped (wrapped (str filename ".world"))]
-          (if (nil? res-from-wrapped)
+        (let [name-from-wrapped (wrapped (str filename ".world"))]
+          (if (nil? name-from-wrapped)
             (failure (str "Cannot load " filename))
             (do
-              (swap! cache assoc filename res-from-wrapped)
-              res-from-wrapped)))))))
+              (let [res (load-world name-from-wrapped)]
+                (swap! cache assoc filename res)
+                res))))))))
 
 (defn load-history-file-fressian [history-filename worlds-dir]
   (load-simulation-result-fressian history-filename

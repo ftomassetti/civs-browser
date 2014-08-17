@@ -4,6 +4,7 @@
   :dependencies [
                   [org.clojure/clojure "1.6.0"]
                   [civs "0.2.0-SNAPSHOT"]
+                  [com.github.lands/lands-java-lib "0.3-SNAPSHOT"]
                   [org.clojure/tools.cli "0.3.1"]
                   [javax.servlet/servlet-api "2.5"]
                   [ring/ring-core "1.3.0"]

@@ -14,6 +14,32 @@
     [civs-browser.model :refer :all])
   (:gen-class))
 
+(import com.github.lands.draw.AncientMapDrawer)
+(import java.io.ByteArrayOutputStream)
+(import java.io.ByteArrayInputStream)
+(import javax.imageio.ImageIO)
+
+; "Return a java.awt.BufferedImage"
+(def ancient-map
+  (memoize
+    (fn [world]
+      (AncientMapDrawer/drawAncientMap world))))
+
+(defn image-bytes [image]
+  (let [baos  (ByteArrayOutputStream.)
+        _     (ImageIO/write image "png", baos )
+        _     (.flush baos)
+        bytes (.toByteArray baos)
+        _     (.close baos)]
+    bytes))
+
+(defn world-ancient-map-view []
+  {
+    :status 200
+    :headers {"Content-Type" "image/png"}
+    :body (ByteArrayInputStream. (image-bytes (ancient-map (world history))))
+  })
+
 (defn view-layout [& content]
   (html
     (doctype :xhtml-strict)

@@ -28,6 +28,9 @@
 (defn game-at [history turn]
   (get (:game-snapshots history) turn))
 
+(defn world [history]
+  (:world (first (vals (:game-snapshots history)))))
+
 (defn group-at [history turn group-id]
   (get (:tribes (game-at history turn)) group-id))
 
