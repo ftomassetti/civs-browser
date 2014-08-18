@@ -103,3 +103,5 @@
       (run history))))
 
 ; (set-history (load-history-file-fressian "examples-history/w77_100turns.history" "examples-worlds"))
+
+; (javax.imageio.ImageIO/read (java.io.File. "examples-maps/ancient_map_seed_77.png"))

@@ -17,13 +17,21 @@
 (import com.github.lands.draw.AncientMapDrawer)
 (import java.io.ByteArrayOutputStream)
 (import java.io.ByteArrayInputStream)
+(import java.awt.RenderingHints)
 (import javax.imageio.ImageIO)
 
 ; "Return a java.awt.BufferedImage"
+;(def ancient-map
+;  (memoize
+;    (fn [world]
+;      (AncientMapDrawer/drawAncientMap world))))
+
+; Faster :D
 (def ancient-map
   (memoize
-    (fn [world]
-      (AncientMapDrawer/drawAncientMap world))))
+    (fn [world] (javax.imageio.ImageIO/read (java.io.File. "examples-maps/ancient_map_seed_77.png")))))
+
+(def map-scale-factor 4)
 
 (defn image-bytes [image]
   (let [baos  (ByteArrayOutputStream.)
@@ -46,6 +54,19 @@
 (defn sub-image [^java.awt.image.BufferedImage image portview]
   (.getSubimage image (int (:x portview)) (int (:y portview)) (int (:width portview)) (int (:height portview))))
 
+(defn scale-image [image factor]
+  (let [ IMG_WIDTH  (int (* factor (.getWidth image)))
+         IMG_HEIGHT (int (* factor (.getWidth image)))
+         resizedImage (java.awt.image.BufferedImage. IMG_WIDTH, IMG_HEIGHT, (.getType image))
+         g (.createGraphics resizedImage)
+         _ (.drawImage g image, 0, 0, IMG_WIDTH, IMG_HEIGHT, nil)
+         _ (.dispose g)
+         _ (.setComposite g (java.awt.AlphaComposite/Src))
+         _ (.setRenderingHint g (RenderingHints/KEY_INTERPOLATION) (RenderingHints/VALUE_INTERPOLATION_BILINEAR))
+         _ (.setRenderingHint g (RenderingHints/KEY_RENDERING)    (RenderingHints/VALUE_RENDER_QUALITY))
+         _ (.setRenderingHint g (RenderingHints/KEY_ANTIALIASING) (RenderingHints/VALUE_ANTIALIAS_ON)) ]
+    resizedImage))
+
 (defn tibe-movements-ancient-map-view [group-id]
   (let [positions (vals (group-positions-in-time history group-id))
         minx (reduce (fn [acc pos] (min acc (:x pos))) (:x (first positions)) (rest positions))
@@ -59,7 +80,11 @@
         end_y (min (height history) (+ maxy radius))
         w (- end_x x)
         h (- end_y y)]
-  (response-png-image (sub-image (ancient-map (world history)) {:x x :y y :width w :height h}))))
+  (response-png-image
+    (sub-image
+      (ancient-map
+        (world history))
+      {:x (* map-scale-factor x) :y (* map-scale-factor y) :width (* map-scale-factor w) :height (* map-scale-factor h)}))))
 
 (defn view-layout [& content]
   (html
