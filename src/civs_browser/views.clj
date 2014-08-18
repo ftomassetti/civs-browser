@@ -33,12 +33,33 @@
         _     (.close baos)]
     bytes))
 
-(defn world-ancient-map-view []
+(defn response-png-image [image]
   {
     :status 200
     :headers {"Content-Type" "image/png"}
-    :body (ByteArrayInputStream. (image-bytes (ancient-map (world history))))
+    :body (ByteArrayInputStream. (image-bytes image))
   })
+
+(defn world-ancient-map-view []
+  (response-png-image (ancient-map (world history))))
+
+(defn sub-image [^java.awt.image.BufferedImage image portview]
+  (.getSubimage image (int (:x portview)) (int (:y portview)) (int (:width portview)) (int (:height portview))))
+
+(defn tibe-movements-ancient-map-view [group-id]
+  (let [positions (vals (group-positions-in-time history group-id))
+        minx (reduce (fn [acc pos] (min acc (:x pos))) (:x (first positions)) (rest positions))
+        maxx (reduce (fn [acc pos] (max acc (:x pos))) (:x (first positions)) (rest positions))
+        miny (reduce (fn [acc pos] (min acc (:y pos))) (:y (first positions)) (rest positions))
+        maxy (reduce (fn [acc pos] (max acc (:y pos))) (:y (first positions)) (rest positions))
+        radius 5
+        x (max 0 (- minx radius))
+        y (max 0 (- miny radius))
+        end_x (min (width history) (+ maxx radius))
+        end_y (min (height history) (+ maxy radius))
+        w (- end_x x)
+        h (- end_y y)]
+  (response-png-image (sub-image (ancient-map (world history)) {:x x :y y :width w :height h}))))
 
 (defn view-layout [& content]
   (html
@@ -54,7 +75,7 @@
   (view-layout
     [:h1 "Civs-Browser: Tribes homepage"]
     (for [tribe-id (sort (groups-ids history))]
-      [:p "View " (link-to (str "tribe/" tribe-id) (str "Tribe " tribe-id))])))
+      [:p "View " (link-to (str "group/" tribe-id) (str "Group " tribe-id))])))
 
 (defn homepage []
   (view-layout
@@ -65,13 +86,14 @@
 (defn- group-page-content [group-id]
   (let [ft (first-turn-for-group history group-id)
         lt (last-turn-for-group history group-id)]
-  [:p (str "Alive from " ft " to " lt)]))
+    [:p (str "Alive from " ft " to " lt)]
+    (image (str "/group/" group-id "/movements.png"))))
 
-(defn tribe-page [tribe-id]
+(defn group-page [group-id]
   (view-layout
-    [:h1 (str "Civs-Browser: Group " tribe-id)]
-    (if (exist-group? history tribe-id)
-      (group-page-content tribe-id)
+    [:h1 (str "Civs-Browser: Group " group-id)]
+    (if (exist-group? history group-id)
+      (group-page-content group-id)
       [:p "This group does not exist"])))
 
 (defn raw []

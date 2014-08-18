@@ -31,6 +31,12 @@
 (defn world [history]
   (:world (first (vals (:game-snapshots history)))))
 
+(defn width [history]
+  (-> (world history) .getDimension .getWidth))
+
+(defn height [history]
+  (-> (world history) .getDimension .getHeight))
+
 (defn group-at [history turn group-id]
   (get (:tribes (game-at history turn)) group-id))
 

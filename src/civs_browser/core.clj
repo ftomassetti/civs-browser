@@ -36,8 +36,10 @@
     (tribes-homepage))
   (GET "/ancient-map.png" []
     (world-ancient-map-view))
-  (GET ["/tribe/:id", :id #"[0-9]+"] [id]
-    (tribe-page (read-string id))))
+  (GET ["/group/:id/movements.png", :id #"[0-9]+"] [id]
+    (tibe-movements-ancient-map-view (read-string id)))
+  (GET ["/group/:id", :id #"[0-9]+"] [id]
+    (group-page (read-string id))))
 
 (defn failure [msg]
   (binding [*out* *err*]
@@ -100,3 +102,4 @@
     (let [history (load-history-file-fressian (:history-filename options) (:worlds-dir options))]
       (run history))))
 
+; (set-history (load-history-file-fressian "examples-history/w77_100turns.history" "examples-worlds"))
