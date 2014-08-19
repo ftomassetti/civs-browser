@@ -86,7 +86,7 @@
         (world history))
       {:x (* map-scale-factor x) :y (* map-scale-factor y) :width (* map-scale-factor w) :height (* map-scale-factor h)}))))
 
-(defn view-layout [& content]
+(defn view-layout [title & content]
   (html
     (doctype :xhtml-strict)
     (xhtml-tag "en"
@@ -95,11 +95,15 @@
                :content "text/html; charset=utf-8"}]
        [:title "Civs-Browser"]
        (include-css "/css/screen.css")]
-      [:body content])))
+      [:body
+       [:h1 (str "Civs-Browser: " title)]
+       [:ul.links
+        [:li (link-to "/" "Homepage")]
+        [:li (link-to "/tribes" "Groups")]]
+       content])))
 
 (defn tribes-homepage []
-  (view-layout
-    [:h1 "Civs-Browser: Groups homepage"]
+  (view-layout "Groups homepage"
     [:h2 "All the groups"]
     [:ul.groups
       (for [tribe-id (sort (groups-ids history))]
@@ -107,10 +111,8 @@
          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]))
 
 (defn homepage []
-  (view-layout
-    [:h1 "Civs-Browser: Homepage"]
-    [:p (str "No. turns: " (n-turns history))]
-    [:p "View " (link-to "tribes" "Tribes")]))
+  (view-layout "Homepage"
+    [:p (str "No. turns: " (n-turns history))]))
 
 (defn- group-page-content [group-id]
   (let [ft (first-turn-for-group history group-id)
