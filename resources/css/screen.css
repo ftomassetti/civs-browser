@@ -39,3 +39,9 @@ a:hover {
 a {
     text-decoration: none;
 }
+
+.worldmap {
+    display: block;
+    margin: auto;
+    width:50%;
+}

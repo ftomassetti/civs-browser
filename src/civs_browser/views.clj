@@ -112,7 +112,8 @@
 
 (defn homepage []
   (view-layout "Homepage"
-    [:p (str "No. turns: " (n-turns history))]))
+    [:p (str "No. turns: " (n-turns history))]
+    [:img.worldmap {:src "/ancient-map.png" }]))
 
 (defn- group-page-content [group-id]
   (let [ft (first-turn-for-group history group-id)
