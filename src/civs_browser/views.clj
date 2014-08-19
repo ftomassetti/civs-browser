@@ -121,13 +121,11 @@
     (image (str "/group/" group-id "/movements.png"))))
 
 (defn group-page [group-id]
-  (view-layout
-    [:h1 (str "Civs-Browser: Group " group-id)]
+  (view-layout (str "Group "group-id)
     (if (exist-group? history group-id)
       (group-page-content group-id)
       [:p "This group does not exist"])))
 
 (defn raw []
-  (view-layout
-    [:h1 "Civs-Browser: Raw view of the history file"]
+  (view-layout ("Raw view of the history file")
     [:p (str history)]))
