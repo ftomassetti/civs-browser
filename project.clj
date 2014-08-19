@@ -1,6 +1,8 @@
 (defproject civs-browser "0.1.0-SNAPSHOT"
   :description "A web application to visualize the history files produced by civs"
   :url "https://github.com/ftomassetti/civs-browser"
+  :license {:name "The Apache Software License, Version 2.0"
+            :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [
                   [org.clojure/clojure "1.6.0"]
                   [civs "0.2.0-SNAPSHOT"]
