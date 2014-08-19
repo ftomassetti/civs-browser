@@ -1,7 +1,12 @@
 (ns civs-browser.repl
   (:use civs-browser.handler
         ring.server.standalone
-        [ring.middleware file-info file]))
+        [ring.middleware file-info file]
+        civs-browser.basic
+        civs-browser.model
+        civs.model
+        civs-browser.core)
+  (:require [civs.io :refer :all]))
 
 (defonce server (atom nil))
 
@@ -20,6 +25,7 @@
   "used for starting the server in development mode from REPL"
   [& [port]]
   (let [port (if port (Integer/parseInt port) 8080)]
+    (set-history (load-history-file-fressian "examples-history/w77_100turns.history" "examples-worlds"))
     (reset! server
       (serve (get-handler)
         {:port port
