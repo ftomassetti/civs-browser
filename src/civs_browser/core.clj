@@ -27,7 +27,7 @@
 (defn parse-input [a b]
   [(Integer/parseInt a) (Integer/parseInt b)])
 
-(defroutes app
+(defroutes app-routes
   (GET "/" []
     (homepage))
   (GET "/raw" []
@@ -89,7 +89,7 @@
 
 (defn run [history]
   (set-history history)
-  (run-jetty #'civs-browser.core/app {:port 8080}))
+  (run-jetty #'civs-browser.core/app-routes {:port 8080}))
 
 (defn -main [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
