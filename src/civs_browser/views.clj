@@ -93,7 +93,8 @@
       [:head
        [:meta {:http-equiv "Content-type"
                :content "text/html; charset=utf-8"}]
-       [:title "Civs-Browser"]]
+       [:title "Civs-Browser"]
+       (include-css "/css/screen.css")]
       [:body content])))
 
 (defn tribes-homepage []
