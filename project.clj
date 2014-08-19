@@ -10,13 +10,22 @@
                   [org.clojure/tools.cli "0.3.1"]
                   [javax.servlet/servlet-api "2.5"]
                   [ring/ring-core "1.3.0"]
-                  [ring/ring-devel "1.3.0"]
                   [ring/ring-jetty-adapter "1.3.0"]
+                  [ring-server "0.3.1"]
                   [compojure "1.1.8"]
                 ]
+  :plugins [[lein-ring "0.8.10"]]
+  :ring {:handler civs-browser.handler/app
+         :init civs-browser.handler/init
+         :destroy civs-browser.handler/destroy}
   :dev-dependencies
                 [[lein-run "1.0.1-SNAPSHOT"]]
   :main ^:skip-aot civs-browser.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}}
+  :profiles
+    {
+      :uberjar { :aot :all}
+     :production {:ring {:open-browser? false, :stacktraces? false, :auto-reload? false}}
+     :dev {:dependencies [[ring-mock "0.1.5"] [ring/ring-devel "1.3.0"]]}
+     }
   :repositories {"sonartype snapshots" "https://oss.sonatype.org/content/repositories/snapshots"})
