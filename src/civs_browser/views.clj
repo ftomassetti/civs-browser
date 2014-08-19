@@ -99,11 +99,12 @@
 
 (defn tribes-homepage []
   (view-layout
-    [:h1 "Civs-Browser: Tribes homepage"]
+    [:h1 "Civs-Browser: Groups homepage"]
+    [:h2 "All the groups"]
     [:ul.tribes
       (for [tribe-id (sort (groups-ids history))]
         [:li
-         [:p (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]))
+         [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]))
 
 (defn homepage []
   (view-layout

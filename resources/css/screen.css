@@ -6,4 +6,8 @@ body {
 
 h1 {
     text-align: center;
+    display: block;
+    border-bottom: 2px solid gray;
+    margin-bottom: 10px;
+    padding-bottom: 2px;
 }
