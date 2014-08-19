@@ -101,7 +101,7 @@
   (view-layout
     [:h1 "Civs-Browser: Groups homepage"]
     [:h2 "All the groups"]
-    [:ul.tribes
+    [:ul.groups
       (for [tribe-id (sort (groups-ids history))]
         [:li
          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]))
