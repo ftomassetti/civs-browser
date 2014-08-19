@@ -99,8 +99,10 @@
 (defn tribes-homepage []
   (view-layout
     [:h1 "Civs-Browser: Tribes homepage"]
-    (for [tribe-id (sort (groups-ids history))]
-      [:p "View " (link-to (str "group/" tribe-id) (str "Group " tribe-id))])))
+    [:ul.tribes
+      (for [tribe-id (sort (groups-ids history))]
+        [:li
+         [:p (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]))
 
 (defn homepage []
   (view-layout
