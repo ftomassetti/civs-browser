@@ -13,10 +13,12 @@
                   [ring/ring-jetty-adapter "1.3.0"]
                   [ring-server "0.3.1"]
                   [compojure "1.1.8"]
+                  [org.clojure/clojurescript "0.0-2311"]
+                  [jayq "2.5.2"]
                 ]
   :plugins [[lein-ring "0.8.10"]]
   :ring {:handler civs-browser.handler/app
-         :init civs-browser.handler/init
+         :init    civs-browser.handler/init
          :destroy civs-browser.handler/destroy}
   :dev-dependencies
                 [[lein-run "1.0.1-SNAPSHOT"]]
