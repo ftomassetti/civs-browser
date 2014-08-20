@@ -26,6 +26,9 @@
   [& [port]]
   (let [port (if port (Integer/parseInt port) 8080)]
     (set-history (load-history-file-fressian "examples-history/w77_100turns.history" "examples-worlds"))
+    (let [turns (sort (keys (:game-snapshots history)))
+          ordered-games (map (fn [t] (get (:game-snapshots history) t)) turns)]
+      (def popdata-byyear (map (fn [[t g]] [t (game-total-pop g)]) (:game-snapshots history))))
     (reset! server
       (serve (get-handler)
         {:port port

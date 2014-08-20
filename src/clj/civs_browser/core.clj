@@ -30,6 +30,8 @@
 (defroutes app-routes
   (GET "/" []
     (homepage))
+  (GET "/worldpop.png" []
+    (world-pop-plot))
   (GET "/raw" []
     (raw))
   (GET "/tribes" []

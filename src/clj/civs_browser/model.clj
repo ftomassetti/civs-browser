@@ -8,6 +8,7 @@
     [clojure.tools.cli :refer [parse-opts]]
     [clojure.string :as string]
     [civs.io :refer :all]
+    [civs.model :refer :all]
     [civs-browser.basic :refer :all]
     [clojure.edn :as edn]
     [clojure.set :refer [union]])
@@ -75,3 +76,12 @@
 
 (defn exist-group? [history tribe-id]
   (contains? (groups-ids history) tribe-id))
+
+(defn turns []
+  (sort (keys (:game-snapshots history))))
+
+(defn ordered-games []
+  (map (fn [t] (get (:game-snapshots history) t)) (turns)))
+
+(defn popdata []
+  (map #(game-total-pop %) (ordered-games)))

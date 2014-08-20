@@ -4,14 +4,16 @@
   (:use hiccup.core)
   (:use hiccup.page)
   (:use hiccup.element)
-  (:use ring.adapter.jetty)
+  (:use ring.adapter.jetty
+        [incanter core stats charts])
   (:require
     [clojure.tools.cli :refer [parse-opts]]
     [clojure.string :as string]
     [civs.io :refer :all]
     [clojure.edn :as edn]
     [civs-browser.basic :refer :all]
-    [civs-browser.model :refer :all])
+    [civs-browser.model :refer :all]
+    )
   (:gen-class))
 
 (import com.github.lands.draw.AncientMapDrawer)
@@ -47,6 +49,13 @@
     :headers {"Content-Type" "image/png"}
     :body (ByteArrayInputStream. (image-bytes image))
   })
+
+(defn response-png-image-from-bytes [bytes]
+  {
+    :status 200
+    :headers {"Content-Type" "image/png"}
+    :body (ByteArrayInputStream. bytes)
+    })
 
 (defn world-ancient-map-view []
   (response-png-image (ancient-map (world history))))
@@ -96,13 +105,13 @@
        [:title "Civs-Browser"]
        (include-css "/css/screen.css")]
         [:script {:src "/js/jquery-1.11.1.min.js"}]
-        [:script {:src "/js/cljs.js"}]
       [:body
        [:h1 (str "Civs-Browser: " title)]
        [:ul.links
         [:li (link-to "/" "Homepage")]
         [:li (link-to "/tribes" "Groups")]]
-       content])))
+       content
+       [:script {:src "/js/cljs.js"}]])))
 
 (defn tribes-homepage []
   (view-layout "Groups homepage"
@@ -112,10 +121,25 @@
         [:li
          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]))
 
+(defn plot-bytes [plot]
+  (let [baos  (ByteArrayOutputStream.)
+        _     (save plot baos)
+        _     (.flush baos)
+        bytes (.toByteArray baos)
+        _     (.close baos)]
+    bytes))
+
+(defn world-pop-plot []
+  (response-png-image-from-bytes
+    (plot-bytes
+      (line-chart (range 101) (popdata)))))
+
 (defn homepage []
   (view-layout "Homepage"
     [:p (str "No. turns: " (n-turns history))]
-    [:img.worldmap {:src "/ancient-map.png" }]))
+    [:img.worldmap {:src "/ancient-map.png" }]
+    [:h2 "World population over time"]
+    (image "/worldpop.png")))
 
 (defn- group-page-content [group-id]
   (let [ft (first-turn-for-group history group-id)
