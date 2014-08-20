@@ -13,7 +13,11 @@
 (defn destroy []
   (println "civs-browser is shutting down"))
 
+(defroutes basic-routes
+  (route/resources "/")
+  (route/not-found "Not Found"))
+
 (def app
-  (-> (routes app-routes)
+  (-> (routes app-routes basic-routes)
     (handler/site)
     (wrap-base-url)))
