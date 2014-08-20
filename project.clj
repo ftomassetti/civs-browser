@@ -31,4 +31,13 @@
      :production {:ring {:open-browser? false, :stacktraces? false, :auto-reload? false}}
      :dev {:dependencies [[ring-mock "0.1.5"] [ring/ring-devel "1.3.0"]]}
      }
-  :repositories {"sonartype snapshots" "https://oss.sonatype.org/content/repositories/snapshots"})
+  :repositories {"sonartype snapshots" "https://oss.sonatype.org/content/repositories/snapshots"}
+  :source-paths ["src/clj"]
+  :cljsbuild {
+               :builds {
+                         :main {
+                                 :source-path "src/cljs"
+                                 :compiler {
+                                             :output-to "resources/js/cljs.js"
+                                             :optimizations :simple
+                                             :pretty-print true}}}})
