@@ -19,5 +19,6 @@
 
 (def app
   (-> (routes app-routes basic-routes)
+    ; site creates an handler wrapped in some common middleware such as wrap-session, wrap-params and so on
     (handler/site)
     (wrap-base-url)))
