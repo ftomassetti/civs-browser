@@ -16,7 +16,8 @@
                   [org.clojure/clojurescript "0.0-2311"]
                   [jayq "2.5.2"]
                 ]
-  :plugins [[lein-ring "0.8.10"]]
+  :plugins [[lein-cljsbuild "1.0.3"]
+            [lein-ring "0.8.10"]]
   :ring {:handler civs-browser.handler/app
          :init    civs-browser.handler/init
          :destroy civs-browser.handler/destroy}
