@@ -1,7 +1,7 @@
 civs-browser
 ============
 
-A web application to visualize the history files produced by [civs](https://github.com/ftomassetti/civs/)
+A web application to visualize the history files produced by [civs](https://github.com/ftomassetti/civs/).
 
 The workflow is this one:
 * use [lands](https://github.com/ftomassetti/lands) to generate your own realistic world, simulating the main physical phenomenons like plate tectonics, rain-shadow, erosion, etc.
