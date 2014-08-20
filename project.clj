@@ -33,11 +33,12 @@
      }
   :repositories {"sonartype snapshots" "https://oss.sonatype.org/content/repositories/snapshots"}
   :source-paths ["src/clj"]
-  :cljsbuild {
-               :builds {
-                         :main {
-                                 :source-path "src/cljs"
-                                 :compiler {
-                                             :output-to "resources/js/cljs.js"
-                                             :optimizations :simple
-                                             :pretty-print true}}}})
+  :cljsbuild
+  {:builds
+   [{:source-paths ["src/cljs"],
+     :id "main",
+     :compiler
+     {:optimizations :simple,
+      :output-to "resources/js/cljs.js",
+      :pretty-print true}}]}
+  )

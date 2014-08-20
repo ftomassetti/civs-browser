@@ -95,6 +95,8 @@
                :content "text/html; charset=utf-8"}]
        [:title "Civs-Browser"]
        (include-css "/css/screen.css")]
+        [:script {:src "/js/jquery-1.11.1.min.js"}]
+        [:script {:src "/js/cljs.js"}]
       [:body
        [:h1 (str "Civs-Browser: " title)]
        [:ul.links
