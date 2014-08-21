@@ -76,24 +76,37 @@
          _ (.setRenderingHint g (RenderingHints/KEY_ANTIALIASING) (RenderingHints/VALUE_ANTIALIAS_ON)) ]
     resizedImage))
 
+(defn draw-red-points [image points]
+  (doall (for [{x :x y :y} points]
+    (do
+      (.setRGB image x y (.getRGB (java.awt.Color. 255 0 0)))
+      (.setRGB image (dec x) y (.getRGB (java.awt.Color. 255 0 0)))
+      (.setRGB image x (dec y) (.getRGB (java.awt.Color. 255 0 0)))
+      (.setRGB image (inc x) y (.getRGB (java.awt.Color. 255 0 0)))
+      (.setRGB image x (inc y) (.getRGB (java.awt.Color. 255 0 0))))))
+  image)
+
 (defn tibe-movements-ancient-map-view [group-id]
   (let [positions (vals (group-positions-in-time history group-id))
         minx (reduce (fn [acc pos] (min acc (:x pos))) (:x (first positions)) (rest positions))
         maxx (reduce (fn [acc pos] (max acc (:x pos))) (:x (first positions)) (rest positions))
         miny (reduce (fn [acc pos] (min acc (:y pos))) (:y (first positions)) (rest positions))
         maxy (reduce (fn [acc pos] (max acc (:y pos))) (:y (first positions)) (rest positions))
-        radius 5
+        radius 15
         x (max 0 (- minx radius))
         y (max 0 (- miny radius))
         end_x (min (width history) (+ maxx radius))
         end_y (min (height history) (+ maxy radius))
         w (- end_x x)
-        h (- end_y y)]
+        h (- end_y y)
+        pixels (map (fn [{ox :x, oy :y}] {:x (* map-scale-factor (- ox x)) :y (* map-scale-factor(- oy y))}) positions)]
   (response-png-image
-    (sub-image
-      (ancient-map
-        (world history))
-      {:x (* map-scale-factor x) :y (* map-scale-factor y) :width (* map-scale-factor w) :height (* map-scale-factor h)}))))
+    (draw-red-points
+      (sub-image
+        (ancient-map
+          (world history))
+        {:x (* map-scale-factor x) :y (* map-scale-factor y) :width (* map-scale-factor w) :height (* map-scale-factor h)})
+      pixels))))
 
 (defn view-layout [title & content]
   (html
