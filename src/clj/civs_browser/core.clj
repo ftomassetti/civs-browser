@@ -39,7 +39,7 @@
   (GET "/ancient-map.png" []
     (world-ancient-map-view))
   (GET ["/group/:id/movements.png", :id #"[0-9]+"] [id]
-    (tibe-movements-ancient-map-view (read-string id)))
+    (tribe-movements-ancient-map-view (read-string id)))
   (GET ["/group/:id", :id #"[0-9]+"] [id]
     (group-page (read-string id))))
 

@@ -76,17 +76,22 @@
          _ (.setRenderingHint g (RenderingHints/KEY_ANTIALIASING) (RenderingHints/VALUE_ANTIALIAS_ON)) ]
     resizedImage))
 
-(defn draw-red-points [image points]
-  (doall (for [{x :x y :y} points]
+(defn draw-colored-points [image colored-points]
+  (doall (for [{x :x y :y color :color} colored-points]
     (do
-      (.setRGB image x y (.getRGB (java.awt.Color. 255 0 0)))
-      (.setRGB image (dec x) y (.getRGB (java.awt.Color. 255 0 0)))
-      (.setRGB image x (dec y) (.getRGB (java.awt.Color. 255 0 0)))
-      (.setRGB image (inc x) y (.getRGB (java.awt.Color. 255 0 0)))
-      (.setRGB image x (inc y) (.getRGB (java.awt.Color. 255 0 0))))))
+      (.setRGB image x y (.getRGB color))
+      (.setRGB image (dec x) y (.getRGB color))
+      (.setRGB image x (dec y) (.getRGB color))
+      (.setRGB image (inc x) y (.getRGB color))
+      (.setRGB image x (inc y) (.getRGB color)))))
   image)
 
-(defn tibe-movements-ancient-map-view [group-id]
+(defn graded-colors [len]
+  (let [values (map #(/ % (float len)) (range len))
+        colors (map #(java.awt.Color. (int (* % 255)) 0 (- 255 (int (* % 255)))) values)]
+    colors))
+
+(defn tribe-movements-ancient-map-view [group-id]
   (let [positions (vals (group-positions-in-time history group-id))
         minx (reduce (fn [acc pos] (min acc (:x pos))) (:x (first positions)) (rest positions))
         maxx (reduce (fn [acc pos] (max acc (:x pos))) (:x (first positions)) (rest positions))
@@ -99,14 +104,16 @@
         end_y (min (height history) (+ maxy radius))
         w (- end_x x)
         h (- end_y y)
-        pixels (map (fn [{ox :x, oy :y}] {:x (* map-scale-factor (- ox x)) :y (* map-scale-factor(- oy y))}) positions)]
+        pixels (map (fn [{ox :x, oy :y}] {:x (* map-scale-factor (- ox x)) :y (* map-scale-factor(- oy y))}) positions)
+        colors (graded-colors (.size positions))
+        colored-pixels (map #(assoc %1 :color %2) pixels colors)]
   (response-png-image
-    (draw-red-points
+    (draw-colored-points
       (sub-image
         (ancient-map
           (world history))
         {:x (* map-scale-factor x) :y (* map-scale-factor y) :width (* map-scale-factor w) :height (* map-scale-factor h)})
-      pixels))))
+      colored-pixels))))
 
 (defn view-layout [title & content]
   (html
