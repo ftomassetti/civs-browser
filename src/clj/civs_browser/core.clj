@@ -8,7 +8,7 @@
     [clojure.tools.cli :refer [parse-opts]]
     [clojure.string :as string]
     [civs.io :refer :all]
-    [civs.model :refer :all]
+    [civs.model.core :refer :all]
     [clojure.edn :as edn]
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
@@ -38,6 +38,10 @@
     (tribes-homepage))
   (GET "/ancient-map.png" []
     (world-ancient-map-view))
+  (GET "/prosperity-map-gh.png" []
+    (world-prosperity-map-view :gathering-and-hunting))
+  (GET "/prosperity-map-agr.png" []
+    (world-prosperity-map-view :agriculture))
   (GET ["/group/:id/movements.png", :id #"[0-9]+"] [id]
     (tribe-movements-ancient-map-view (read-string id)))
   (GET ["/group/:id", :id #"[0-9]+"] [id]

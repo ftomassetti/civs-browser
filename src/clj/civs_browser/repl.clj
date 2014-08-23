@@ -4,7 +4,7 @@
         [ring.middleware file-info file]
         civs-browser.basic
         civs-browser.model
-        civs.model
+        civs.model.core
         civs-browser.core)
   (:require [civs.io :refer :all]))
 

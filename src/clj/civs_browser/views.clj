@@ -11,6 +11,8 @@
     [clojure.string :as string]
     [civs.io :refer :all]
     [clojure.edn :as edn]
+    [civs.model.core :refer :all]
+    [civs.logic.demographics :refer :all]
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
     )
@@ -19,7 +21,9 @@
 (import com.github.lands.draw.AncientMapDrawer)
 (import java.io.ByteArrayOutputStream)
 (import java.io.ByteArrayInputStream)
+(import java.awt.image.BufferedImage)
 (import java.awt.RenderingHints)
+(import java.awt.Color)
 (import javax.imageio.ImageIO)
 
 ; "Return a java.awt.BufferedImage"
@@ -32,6 +36,26 @@
 (def ancient-map
   (memoize
     (fn [world] (javax.imageio.ImageIO/read (java.io.File. "examples-maps/ancient_map_seed_77.png")))))
+
+(defn exalt [n]
+  (max (- (* 2.7 n) 1.72) 0.0))
+
+(def prosperity-map
+  (memoize
+    (fn [world activity]
+      (let [ w (-> world .getDimension .getWidth)
+             h (-> world .getDimension .getHeight)
+             img (BufferedImage. w h (BufferedImage/TYPE_INT_ARGB))
+             g (.createGraphics img)]
+        (doseq [y (range h)]
+          (doseq [x (range w)]
+            (let [pos {:x x :y y}]
+              (when (isLand world pos)
+                (let [p (base-prosperity-per-activity world pos activity)]
+                  (.setColor g (Color. (- 255 (int (* (exalt p) 255.0))) (int (* (exalt p) 255.0)) 0)))
+                (.fillRect g x y 1 1)))))
+        (.dispose g)
+        img))))
 
 (def map-scale-factor 4)
 
@@ -59,6 +83,9 @@
 
 (defn world-ancient-map-view []
   (response-png-image (ancient-map (world history))))
+
+(defn world-prosperity-map-view [activity]
+  (response-png-image (prosperity-map (world history) activity)))
 
 (defn sub-image [^java.awt.image.BufferedImage image portview]
   (.getSubimage image (int (:x portview)) (int (:y portview)) (int (:width portview)) (int (:height portview))))

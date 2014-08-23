@@ -4,5 +4,3 @@
   (:require [jayq.core :as jq]
             ))
 
-(def a "CIAO22")
-

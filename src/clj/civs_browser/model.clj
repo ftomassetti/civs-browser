@@ -8,7 +8,7 @@
     [clojure.tools.cli :refer [parse-opts]]
     [clojure.string :as string]
     [civs.io :refer :all]
-    [civs.model :refer :all]
+    [civs.model.core :refer :all]
     [civs-browser.basic :refer :all]
     [clojure.edn :as edn]
     [clojure.set :refer [union]])
