@@ -49,7 +49,9 @@
   (GET ["/world-at/:turn", :turn #"[0-9]+"] [turn]
     (game-state-page (read-string turn)))
   (GET ["/world-at/:turn/map.png", :turn #"[0-9]+"] [turn]
-    (game-state-map (read-string turn))))
+    (game-state-map (read-string turn)))
+  (GET ["/history/evolution.gif"] []
+    (game-state-evolution)))
 
 (defn failure [msg]
   (binding [*out* *err*]

@@ -15,7 +15,7 @@
     [civs.logic.demographics :refer :all]
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
-    )
+    [gif-clj.core :refer :all])
   (:gen-class))
 
 (import com.github.lands.draw.AncientMapDrawer)
@@ -59,9 +59,9 @@
 
 (def map-scale-factor 4)
 
-(defn image-bytes [image]
+(defn image-bytes [image format]
   (let [baos  (ByteArrayOutputStream.)
-        _     (ImageIO/write image "png", baos )
+        _     (ImageIO/write image format, baos )
         _     (.flush baos)
         bytes (.toByteArray baos)
         _     (.close baos)]
@@ -71,10 +71,24 @@
   {
     :status 200
     :headers {"Content-Type" "image/png"}
-    :body (ByteArrayInputStream. (image-bytes image))
+    :body (ByteArrayInputStream. (image-bytes image "png"))
   })
 
+(defn response-gif-image [image]
+  {
+    :status 200
+    :headers {"Content-Type" "image/gif"}
+    :body (ByteArrayInputStream. (image-bytes image "gif"))
+    })
+
 (defn response-png-image-from-bytes [bytes]
+  {
+    :status 200
+    :headers {"Content-Type" "image/png"}
+    :body (ByteArrayInputStream. bytes)
+    })
+
+(defn response-gif-image-from-bytes [bytes]
   {
     :status 200
     :headers {"Content-Type" "image/png"}
@@ -218,13 +232,39 @@
          h (-> world .getDimension .getHeight)
          img (base-image world)
          g (.createGraphics img)]
-    (doseq [group (societies-alive game)]
+    (doseq [group (groups-alive game)]
       (let [pos (group-position-at history turn (.id group))]
         (let [_ 1]
           (.setColor g (Color. 255 0 255))
           (.fillRect g (:x pos) (:y pos) 1 1))))
     (.dispose g)
     img))
+
+(defn- write-turn-in-image [img turn]
+  (let [ g (.createGraphics img)]
+    (do
+      (.setColor g (Color. 255 0 0))
+      (.drawString g (str turn) 10 10)
+      (.dispose g)
+      img)))
+
+(defn- game-state-evolution-image []
+  (let [ baos  (ByteArrayOutputStream.)
+         encoder (doto (com.github.gif.AnimatedGifEncoder.)
+           (.start baos)
+           (.setDelay 300)
+           (.setRepeat 0))]
+    (do
+      (doseq [frame (map #(write-turn-in-image (game-state-map-image (get (:game-snapshots history) %) %) %) (turns))]
+        (.addFrame encoder frame))
+      (.finish encoder)
+      (.flush baos)
+      (let [bytes (.toByteArray baos)
+            _     (.close baos)]
+        bytes))))
+
+(defn game-state-evolution []
+  (response-gif-image-from-bytes (game-state-evolution-image)))
 
 (defn game-state-map [turn]
   (let [g (get (:game-snapshots history) turn)]

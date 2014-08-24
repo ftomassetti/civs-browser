@@ -16,6 +16,7 @@
                   [org.clojure/clojurescript "0.0-2311"]
                   [jayq "2.5.2"]
                   [incanter "1.2.3-SNAPSHOT"]
+                  [gif-clj "1.0.0-SNAPSHOT"]
                 ]
   :plugins [[lein-cljsbuild "1.0.3"]
             [lein-ring "0.8.10"]]
