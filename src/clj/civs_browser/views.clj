@@ -119,7 +119,9 @@
     colors))
 
 (defn tribe-movements-ancient-map-view [group-id]
-  (let [positions (vals (group-positions-in-time history group-id))
+  (let [positions-in-time (group-positions-in-time history group-id)
+        turns (sort (keys positions-in-time))
+        positions (map #(get positions-in-time %) turns)
         minx (reduce (fn [acc pos] (min acc (:x pos))) (:x (first positions)) (rest positions))
         maxx (reduce (fn [acc pos] (max acc (:x pos))) (:x (first positions)) (rest positions))
         miny (reduce (fn [acc pos] (min acc (:y pos))) (:y (first positions)) (rest positions))
