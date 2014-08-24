@@ -77,8 +77,12 @@
 (defn exist-group? [history tribe-id]
   (contains? (groups-ids history) tribe-id))
 
-(defn turns []
-  (sort (keys (:game-snapshots history))))
+(defn turns
+  ([] (turns history))
+  ([history] (sort (keys (:game-snapshots history)))))
+
+(defn exist-turn? [history turn]
+  (not (nil? (some #{turn} (turns history)))))
 
 (defn ordered-games []
   (map (fn [t] (get (:game-snapshots history) t)) (turns)))

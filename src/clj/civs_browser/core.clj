@@ -45,7 +45,11 @@
   (GET ["/group/:id/movements.png", :id #"[0-9]+"] [id]
     (tribe-movements-ancient-map-view (read-string id)))
   (GET ["/group/:id", :id #"[0-9]+"] [id]
-    (group-page (read-string id))))
+    (group-page (read-string id)))
+  (GET ["/world-at/:turn", :turn #"[0-9]+"] [turn]
+    (game-state-page (read-string turn)))
+  (GET ["/world-at/:turn/map.png", :turn #"[0-9]+"] [turn]
+    (game-state-map (read-string turn))))
 
 (defn failure [msg]
   (binding [*out* *err*]

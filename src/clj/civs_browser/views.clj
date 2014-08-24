@@ -183,6 +183,53 @@
     (plot-bytes
       (line-chart (range 101) (popdata)))))
 
+(defn- game-state-page-content [turn]
+  [:p "A Fantastic turn!"])
+
+(defn game-state-page [turn]
+  (view-layout (str "World at " turn)
+    (if (exist-turn? history turn)
+      (game-state-page-content turn)
+      [:p "This turn does not exist"])))
+
+(defn- base-image
+  "Draw a base image with blue ocean and white land"
+  [world]
+  (let [ w (-> world .getDimension .getWidth)
+         h (-> world .getDimension .getHeight)
+         img (BufferedImage. w h (BufferedImage/TYPE_INT_ARGB))
+         g (.createGraphics img)]
+    (doseq [y (range h)]
+      (doseq [x (range w)]
+        (let [pos {:x x :y y}]
+          (if (isLand world pos)
+            (let [_ 1]
+              (.setColor g (Color. 255 255 255))
+              (.fillRect g x y 1 1))
+            (do
+              (.setColor g (Color. 0 0 255))
+              (.fillRect g x y 1 1))))))
+    (.dispose g)
+    img))
+
+(defn- game-state-map-image [game turn]
+  (let [ world (.world game)
+         w (-> world .getDimension .getWidth)
+         h (-> world .getDimension .getHeight)
+         img (base-image world)
+         g (.createGraphics img)]
+    (doseq [group (societies-alive game)]
+      (let [pos (group-position-at history turn (.id group))]
+        (let [_ 1]
+          (.setColor g (Color. 255 0 255))
+          (.fillRect g (:x pos) (:y pos) 1 1))))
+    (.dispose g)
+    img))
+
+(defn game-state-map [turn]
+  (let [g (get (:game-snapshots history) turn)]
+    (response-png-image (game-state-map-image g turn))))
+
 (defn homepage []
   (view-layout "Homepage"
     [:p (str "No. turns: " (n-turns history))]
