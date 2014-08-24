@@ -48,7 +48,9 @@
   (GET ["/group/:id/movements.png", :id #"[0-9]+"] [id]
     (group-movements-ancient-map-view (read-string id)))
   (GET ["/group/:id", :id #"[0-9]+"] [id]
-    (group-view (read-string id))))
+    (group-view (read-string id)))
+  (GET ["/history/evolution.gif"] []
+    (game-state-evolution)))
 
 (defn failure [msg]
   (binding [*out* *err*]

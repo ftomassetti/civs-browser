@@ -15,9 +15,9 @@
     [civs.logic.demographics :refer :all]
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
-    [potemkin :refer :all]
     [civs-browser.views.basic :refer :all]
-    [civs-browser.views.group :refer :all])
+    [civs-browser.views.group :refer :all]
+    [gif-clj.core :refer :all])
   (:gen-class))
 
 (import com.github.lands.draw.AncientMapDrawer)
@@ -108,3 +108,22 @@
     [:img.worldmap {:src "/ancient-map.png" }]
     [:h2 "World population over time"]
     (image "/worldpop.png")))
+
+(defn- write-turn-in-image [img turn]
+  (let [ g (.createGraphics img)]
+    (do
+      (.setColor g (Color. 255 0 0))
+      (.drawString g (str turn) 10 10)
+      (.dispose g)
+      img)))
+
+(defn- game-state-evolution-image []
+  (let [frames (map #(write-turn-in-image (game-state-map-image (get (:game-snapshots history) %) %) %) (turns))]
+    (build-animated-gif 300 0 frames)))
+
+(defn game-state-evolution []
+  (response-gif-image-from-bytes (game-state-evolution-image)))
+
+(defn game-state-map [turn]
+  (let [g (get (:game-snapshots history) turn)]
+    (response-png-image (game-state-map-image g turn))))

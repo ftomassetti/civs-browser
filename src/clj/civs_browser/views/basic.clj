@@ -14,8 +14,7 @@
     [civs.model.core :refer :all]
     [civs.logic.demographics :refer :all]
     [civs-browser.basic :refer :all]
-    [civs-browser.model :refer :all]
-    [potemkin :refer :all])
+    [civs-browser.model :refer :all])
   (:gen-class))
 
 (import com.github.lands.draw.AncientMapDrawer)
@@ -28,9 +27,9 @@
 
 (def map-scale-factor 4)
 
-(defn image-bytes [image]
+(defn image-bytes [image format]
   (let [baos  (ByteArrayOutputStream.)
-        _     (ImageIO/write image "png", baos )
+        _     (ImageIO/write image format, baos )
         _     (.flush baos)
         bytes (.toByteArray baos)
         _     (.close baos)]
@@ -40,10 +39,24 @@
   {
     :status 200
     :headers {"Content-Type" "image/png"}
-    :body (ByteArrayInputStream. (image-bytes image))
+    :body (ByteArrayInputStream. (image-bytes image "png"))
+    })
+
+(defn response-gif-image [image]
+  {
+    :status 200
+    :headers {"Content-Type" "image/gif"}
+    :body (ByteArrayInputStream. (image-bytes image "gif"))
     })
 
 (defn response-png-image-from-bytes [bytes]
+  {
+    :status 200
+    :headers {"Content-Type" "image/png"}
+    :body (ByteArrayInputStream. bytes)
+    })
+
+(defn response-gif-image-from-bytes [bytes]
   {
     :status 200
     :headers {"Content-Type" "image/png"}
