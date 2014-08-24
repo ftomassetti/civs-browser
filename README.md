@@ -1,5 +1,6 @@
 civs-browser
 ============
+[![Build Status](https://travis-ci.org/ftomassetti/civs-browser.svg?branch=master)](https://travis-ci.org/ftomassetti/civs-browser)
 
 A web application to visualize the history files produced by [civs](https://github.com/ftomassetti/civs/).
 
