@@ -12,7 +12,8 @@
     [clojure.edn :as edn]
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
-    [civs-browser.views :refer :all])
+    [civs-browser.views.core :refer :all]
+    [civs-browser.views.group :refer :all])
   (:gen-class))
 
 (def cli-options
@@ -32,24 +33,22 @@
     (homepage))
   (GET "/worldpop.png" []
     (world-pop-plot))
-  (GET "/raw" []
-    (raw))
-  (GET "/tribes" []
-    (tribes-homepage))
   (GET "/ancient-map.png" []
     (world-ancient-map-view))
   (GET "/prosperity-map-gh.png" []
     (world-prosperity-map-view :gathering-and-hunting))
   (GET "/prosperity-map-agr.png" []
     (world-prosperity-map-view :agriculture))
-  (GET ["/group/:id/movements.png", :id #"[0-9]+"] [id]
-    (tribe-movements-ancient-map-view (read-string id)))
-  (GET ["/group/:id", :id #"[0-9]+"] [id]
-    (group-page (read-string id)))
   (GET ["/world-at/:turn", :turn #"[0-9]+"] [turn]
     (game-state-page (read-string turn)))
   (GET ["/world-at/:turn/map.png", :turn #"[0-9]+"] [turn]
-    (game-state-map (read-string turn))))
+    (game-state-map (read-string turn)))
+  (GET "/groups" []
+    (groups-view))
+  (GET ["/group/:id/movements.png", :id #"[0-9]+"] [id]
+    (group-movements-ancient-map-view (read-string id)))
+  (GET ["/group/:id", :id #"[0-9]+"] [id]
+    (group-view (read-string id))))
 
 (defn failure [msg]
   (binding [*out* *err*]
