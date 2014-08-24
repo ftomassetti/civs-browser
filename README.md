@@ -11,3 +11,5 @@ The workflow is this one:
 This project is really young, this is a work in progress. This is a first screenshot of the homepage as it looks now (pretty basic, eh?)
 
 ![A screenshot of the homepage](/screenshots/homepage.png)
+
+![The different tribes which move across the map](/screenshots/evolution.gif)
