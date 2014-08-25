@@ -51,7 +51,6 @@
 (defn height [history]
   (-> (world history) .getDimension .getHeight))
 
-
 ;#########################################
 ; Groups
 ;#########################################
