@@ -35,33 +35,25 @@
         _     (.close baos)]
     bytes))
 
-(defn response-png-image [image]
-  {
-    :status 200
-    :headers {"Content-Type" "image/png"}
-    :body (ByteArrayInputStream. (image-bytes image "png"))
-    })
-
-(defn response-gif-image [image]
-  {
-    :status 200
-    :headers {"Content-Type" "image/gif"}
-    :body (ByteArrayInputStream. (image-bytes image "gif"))
-    })
-
 (defn response-png-image-from-bytes [bytes]
   {
     :status 200
     :headers {"Content-Type" "image/png"}
     :body (ByteArrayInputStream. bytes)
-    })
+  })
 
 (defn response-gif-image-from-bytes [bytes]
   {
     :status 200
-    :headers {"Content-Type" "image/png"}
+    :headers {"Content-Type" "image/gif"}
     :body (ByteArrayInputStream. bytes)
-    })
+  })
+
+(defn response-png-image [image]
+  (response-gif-image-from-bytes (image-bytes image "png")))
+
+(defn response-gif-image [image]
+  (response-gif-image-from-bytes (image-bytes image "gif")))
 
 (defn base-image
   "Draw a base image with blue ocean and white land"
