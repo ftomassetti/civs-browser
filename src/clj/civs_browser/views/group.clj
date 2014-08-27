@@ -28,9 +28,21 @@
 
 (defn- group-page-content [group-id]
   (let [ft (first-turn-for-group history group-id)
-        lt (last-turn-for-group history group-id)]
-    [:p (str "Alive from " ft " to " lt)]
-    (image (str "/group/" group-id "/movements.png"))))
+        lt (last-turn-for-group history group-id)
+        ts (sort (games-in-which-group-is-alive history group-id))]
+    (list
+      [:p (str "Alive from " ft " to " lt)]
+      [:h2 "Migrations"]
+      [:img.movements {:src (str "/group/" group-id "/movements.png")}]
+      [:h2 "Population"]
+      [:h2 "Events"]
+      (for [t ts]
+        (list
+          [:h3 (str "Turn " t)]
+          [:ul (for [f (facts-by-turn-and-group history t group-id)]
+            [:li (str f)])
+          ]))
+     )))
 
 (defn group-view [group-id]
   (view-layout (str "Group "group-id)

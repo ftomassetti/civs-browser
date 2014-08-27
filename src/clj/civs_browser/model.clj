@@ -104,6 +104,15 @@
   (contains? (groups-ids history) tribe-id))
 
 ;#########################################
+; Facts
+;#########################################
+
+(defn facts-by-turn-and-group [history turn group-id]
+  (let [facts-per-turn (get (:facts history) turn)
+        facts-per-turn-and-group (filter #(= group-id (:tribe %)) facts-per-turn)]
+    facts-per-turn-and-group))
+
+;#########################################
 ; Misc
 ;#########################################
 

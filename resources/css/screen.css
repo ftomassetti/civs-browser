@@ -91,3 +91,9 @@ div.page {
     width: 25%;
     display: inline-block;
 }
+
+.movements {
+    display: block;
+    margin: auto;
+    width: 98%;
+}
