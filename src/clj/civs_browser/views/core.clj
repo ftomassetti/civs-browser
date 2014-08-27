@@ -105,9 +105,10 @@
 (defn homepage []
   (view-layout "Homepage"
     [:p (str "No. turns: " (n-turns history))]
+    [:h2 "World map"]
     [:img.worldmap {:src "/ancient-map.png" }]
     [:h2 "World population over time"]
-    (image "/worldpop.png")))
+    [:img.worldpop {:src "/worldpop.png"}]))
 
 (defn- write-turn-in-image [img turn]
   (let [ g (.createGraphics img)]

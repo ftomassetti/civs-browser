@@ -94,11 +94,12 @@
        (include-css "/css/screen.css")]
       [:script {:src "/js/jquery-1.11.1.min.js"}]
       [:body
-       [:h1 (str "Civs-Browser: " title)]
-       [:ul.links
-        [:li (link-to "/" "Homepage")]
-        [:li (link-to "/tribes" "Groups")]]
-       content
+       [:div.page
+        [:h1 (str "Civs-Browser: " title)]
+        [:ul.links
+          [:li (link-to "/" "Homepage")]
+          [:li (link-to "/groups" "Groups")]]
+        content]
        [:script {:src "/js/cljs.js"}]])))
 
 (defn draw-colored-points [image colored-points]
