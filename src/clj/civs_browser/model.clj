@@ -63,7 +63,9 @@
 
 (defn turns-in-which-group-is-alive [history group-id]
   (sort (filter
-    (fn [turn] (alive? (group-at history turn group-id)))
+    (fn [turn] (let
+                 [gr (group-at history turn group-id)]
+                 (if (nil? gr) false (alive? gr))))
     (turns history))))
 
 (defn group-position-at [history turn group-id]

@@ -57,6 +57,13 @@
       (group-page-content group-id)
       [:p "This group does not exist"])))
 
+(defn- li-per-group [group-id]
+  (try
+    [:li
+    [:span (link-to (str "group/" group-id) (str "Group " group-id))
+      " (" (str (first-turn-for-group history group-id)) "-" (str (last-turn-for-group history group-id)) ")"]]
+    (catch Exception e (throw (Exception. (str "Working on " group-id) e)))))
+
 (defn groups-view []
   (let [all-groups (sort (groups-ids history))
         [groups-a groups-bc] (split-at (/ (.size all-groups) 3) all-groups)
@@ -65,16 +72,13 @@
       [:h2 "All the groups"]
       [:ul.groups
        (for [tribe-id groups-a]
-         [:li
-          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]
+         (li-per-group tribe-id))]
       [:ul.groups
        (for [tribe-id groups-b]
-         [:li
-          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]
+         (li-per-group tribe-id))]
       [:ul.groups
        (for [tribe-id groups-c]
-         [:li
-          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])])))
+         (li-per-group tribe-id))])))
 
 (defn- graded-colors [len]
   (let [values (map #(/ % (float len)) (range len))
