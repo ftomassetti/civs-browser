@@ -47,6 +47,8 @@
     (groups-view))
   (GET ["/group/:id/movements.png", :id #"[0-9]+"] [id]
     (group-movements-ancient-map-view (read-string id)))
+  (GET ["/group/:id/pop.png", :id #"[0-9]+"] [id]
+    (group-pop-plot (read-string id)))
   (GET ["/group/:id", :id #"[0-9]+"] [id]
     (group-view (read-string id)))
   (GET ["/history/evolution.gif"] []

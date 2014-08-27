@@ -97,3 +97,8 @@ div.page {
     margin: auto;
     width: 98%;
 }
+
+.population.plot {
+    margin: auto;
+    display: block;
+}

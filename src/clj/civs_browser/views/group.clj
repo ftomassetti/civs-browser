@@ -26,15 +26,22 @@
 (import java.awt.Color)
 (import javax.imageio.ImageIO)
 
+(defn group-pop-plot [group-id]
+  (let [data (group-popdata-in-time history group-id)]
+    (response-png-image-from-bytes
+      (plot-bytes
+        (line-chart (turns-in-which-group-is-alive history group-id) data)))))
+
 (defn- group-page-content [group-id]
   (let [ft (first-turn-for-group history group-id)
         lt (last-turn-for-group history group-id)
-        ts (sort (games-in-which-group-is-alive history group-id))]
+        ts (sort (turns-in-which-group-is-alive history group-id))]
     (list
       [:p (str "Alive from " ft " to " lt)]
       [:h2 "Migrations"]
       [:img.movements {:src (str "/group/" group-id "/movements.png")}]
       [:h2 "Population"]
+      [:img.population.plot {:src (str "/group/" group-id "/pop.png")}]
       [:h2 "Events"]
       (for [t ts]
         (list

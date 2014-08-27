@@ -73,7 +73,7 @@
 (defn world-pop-plot []
   (response-png-image-from-bytes
     (plot-bytes
-      (line-chart (range 101) (popdata)))))
+      (line-chart (turns) (popdata)))))
 
 (defn- game-state-page-content [turn]
   [:p "A Fantastic turn!"])

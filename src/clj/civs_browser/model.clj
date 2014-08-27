@@ -58,14 +58,13 @@
 (defn groups-ids-in-game [game]
   (into #{} (keys (:tribes game))))
 
-(defn games-in-which-group-is-alive [history group-id]
-  (keys
-    (filter
-      (fn [[turn game]] (contains? (groups-ids-in-game game) group-id))
-      (:game-snapshots history))))
-
 (defn group-at [history turn group-id]
   (get (:tribes (game-at history turn)) group-id))
+
+(defn turns-in-which-group-is-alive [history group-id]
+  (sort (filter
+    (fn [turn] (alive? (group-at history turn group-id)))
+    (turns history))))
 
 (defn group-position-at [history turn group-id]
   (let [ga (game-at history turn)
@@ -76,7 +75,7 @@
   (into {}
     (map
       (fn [turn] [turn (group-position-at history turn group-id)])
-      (games-in-which-group-is-alive history group-id))))
+      (turns-in-which-group-is-alive history group-id))))
 
 (defn distinct-group-positions-in-time [history group-id]
   (let [pos-in-time (sort (group-positions-in-time history group-id))
@@ -92,16 +91,19 @@
            [current-pos [current-mov]] next-mov) 1)))
 
 (defn first-turn-for-group [history group-id]
-  (apply min (games-in-which-group-is-alive history group-id)))
+  (apply min (turns-in-which-group-is-alive history group-id)))
 
 (defn last-turn-for-group [history group-id]
-  (apply max (games-in-which-group-is-alive history group-id)))
+  (apply max (turns-in-which-group-is-alive history group-id)))
 
 (defn groups-ids [history]
   (reduce (fn [acc game] (into acc (groups-ids-in-game game))) #{} (vals (:game-snapshots history))))
 
-(defn exist-group? [history tribe-id]
-  (contains? (groups-ids history) tribe-id))
+(defn exist-group? [history group-id]
+  (contains? (groups-ids history) group-id))
+
+(defn group-popdata-in-time [history group-id]
+  (map #(tribe-total-pop (group-at history % group-id)) (turns-in-which-group-is-alive history group-id)))
 
 ;#########################################
 ; Facts
