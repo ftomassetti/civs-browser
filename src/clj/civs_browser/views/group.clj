@@ -39,12 +39,23 @@
       [:p "This group does not exist"])))
 
 (defn groups-view []
-  (view-layout "Groups homepage"
-    [:h2 "All the groups"]
-    [:ul.groups
-     (for [tribe-id (sort (groups-ids history))]
-       [:li
-        [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]))
+  (let [all-groups (sort (groups-ids history))
+        [groups-a groups-bc] (split-at (/ (.size all-groups) 3) all-groups)
+        [groups-b groups-c]  (split-at (/ (.size all-groups) 3) groups-bc)]
+    (view-layout "Groups homepage"
+      [:h2 "All the groups"]
+      [:ul.groups
+       (for [tribe-id groups-a]
+         [:li
+          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]
+      [:ul.groups
+       (for [tribe-id groups-b]
+         [:li
+          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])]
+      [:ul.groups
+       (for [tribe-id groups-c]
+         [:li
+          [:span (link-to (str "group/" tribe-id) (str "Group " tribe-id))]])])))
 
 (defn- graded-colors [len]
   (let [values (map #(/ % (float len)) (range len))
