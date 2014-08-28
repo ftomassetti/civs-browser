@@ -13,7 +13,8 @@
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
     [civs-browser.views.core :refer :all]
-    [civs-browser.views.group :refer :all])
+    [civs-browser.views.group :refer :all]
+    [civs-browser.views.settlement :refer :all])
   (:gen-class))
 
 (def cli-options
@@ -51,6 +52,8 @@
     (group-pop-plot (read-string id)))
   (GET ["/group/:id", :id #"[0-9]+"] [id]
     (group-view (read-string id)))
+  (GET "/settlements" []
+    (settlements-view))
   (GET ["/history/evolution.gif"] []
     (game-state-evolution)))
 

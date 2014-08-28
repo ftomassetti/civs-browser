@@ -108,6 +108,30 @@
   (map #(tribe-total-pop (group-at history % group-id)) (turns-in-which-group-is-alive history group-id)))
 
 ;#########################################
+; Settlements
+;#########################################
+
+(defn settlements-ids-in-game [game]
+  (into #{} (keys (:settlements game))))
+
+(defn settlements-ids [history]
+  (reduce (fn [acc game] (into acc (settlements-ids-in-game game))) #{} (vals (:game-snapshots history))))
+
+(defn exist-settlement? [history settlement-id]
+  (contains? (settlements-ids history) settlement-id))
+
+(defn settlement-at [history turn id]
+  (get (:settlements (game-at history turn)) id))
+
+(defn turns-in-which-settlement-is-populated [history id]
+  (sort (filter
+          (fn [turn] (let
+                       [settl (settlement-at history turn id)]
+                       (if (nil? settl) false (not (ghost-city? (game-at history turn) id)))))
+          (turns history))))
+
+
+;#########################################
 ; Facts
 ;#########################################
 
