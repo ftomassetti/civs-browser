@@ -23,9 +23,17 @@
     [:span (link-to (str "settlment/" settlement-id) (str "Settlement " settlement-id))]])
 
 (defn settlements-view []
-  (let [all-settlements (sort (settlements-ids history))]
+  (let [all-settlements (sort (settlements-ids history))
+        [settlements-a settlements-bc] (split-at (/ (.size all-settlements) 3) all-settlements)
+        [settlements-b settlements-c]   (split-at (/ (.size all-settlements) 3) settlements-bc)]
     (view-layout "Settlements homepage"
       [:h2 "All the settlements"]
-      [:ul.groups
-       (for [settlement-id all-settlements]
+      [:ul.settlements
+       (for [settlement-id settlements-a]
+         (li-per-settlement settlement-id))]
+      [:ul.settlements
+       (for [settlement-id settlements-b]
+         (li-per-settlement settlement-id))]
+      [:ul.settlements
+       (for [settlement-id settlements-c]
          (li-per-settlement settlement-id))])))

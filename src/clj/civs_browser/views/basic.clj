@@ -98,7 +98,8 @@
         [:h1 (str "Civs-Browser: " title)]
         [:ul.links
           [:li (link-to "/" "Homepage")]
-          [:li (link-to "/groups" "Groups")]]
+          [:li (link-to "/groups" "Groups")]
+          [:li (link-to "/settlements" "Settlements")]]
         content]
        [:script {:src "/js/cljs.js"}]])))
 

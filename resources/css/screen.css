@@ -90,6 +90,13 @@ div.page {
 .groups {
     width: 25%;
     display: inline-block;
+    vertical-align: top;
+}
+
+.settlements {
+    width: 25%;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .movements {
