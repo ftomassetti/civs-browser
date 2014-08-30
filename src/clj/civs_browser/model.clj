@@ -123,6 +123,12 @@
 (defn settlement-at [history turn id]
   (get (:settlements (game-at history turn)) id))
 
+(defn first-turn-for-settlement [history id]
+  (apply min (turns-in-which-settlement-is-populated history id)))
+
+(defn last-turn-for-settlement [history id]
+  (apply max (turns-in-which-settlement-is-populated history id)))
+
 (defn turns-in-which-settlement-is-populated [history id]
   (sort (filter
           (fn [turn] (let

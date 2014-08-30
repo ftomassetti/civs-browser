@@ -20,7 +20,10 @@
 
 (defn- li-per-settlement [settlement-id]
   [:li
-    [:span (link-to (str "settlment/" settlement-id) (str "Settlement " settlement-id))]])
+    [:span (link-to
+             (str "settlment/" settlement-id)
+             (str "Settlement " settlement-id " (" (first-turn-for-settlement history settlement-id)
+               " - " (last-turn-for-settlement history settlement-id) " )"))]])
 
 (defn settlements-view []
   (let [all-settlements (sort (settlements-ids history))
