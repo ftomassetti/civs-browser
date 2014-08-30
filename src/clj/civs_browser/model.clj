@@ -107,6 +107,11 @@
 (defn group-popdata-in-time [history group-id]
   (map #(tribe-total-pop (group-at history % group-id)) (turns-in-which-group-is-alive history group-id)))
 
+(defn group-name [history group-id]
+  (let [t (last-turn-for-group history group-id)
+        g (group-at history t group-id)]
+    (.name g)))
+
 ;#########################################
 ; Settlements
 ;#########################################
@@ -136,6 +141,10 @@
 (defn last-turn-for-settlement [history id]
   (apply max (turns-in-which-settlement-is-populated history id)))
 
+(defn settlement-name [history settlement-id]
+  (let [t (last-turn-for-settlement history settlement-id)
+        g (settlement-at history t settlement-id)]
+    (.name g)))
 
 ;#########################################
 ; Facts

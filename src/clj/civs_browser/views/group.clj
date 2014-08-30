@@ -51,8 +51,13 @@
           ]))
      )))
 
+(defn- label [group-id]
+  (let [name (group-name history group-id)
+        label (if (= :unnamed name) (str "Group " group-id) name)]
+    label))
+
 (defn group-view [group-id]
-  (view-layout (str "Group "group-id)
+  (view-layout (label group-id)
     (if (exist-group? history group-id)
       (group-page-content group-id)
       [:p "This group does not exist"])))
@@ -60,8 +65,8 @@
 (defn- li-per-group [group-id]
   (try
     [:li
-    [:span (link-to (str "group/" group-id) (str "Group " group-id))
-      " (" (str (first-turn-for-group history group-id)) "-" (str (last-turn-for-group history group-id)) ")"]]
+      [:span (link-to (str "group/" group-id) (label group-id)
+          " (" (str (first-turn-for-group history group-id)) "-" (str (last-turn-for-group history group-id)) ")")]]
     (catch Exception e (throw (Exception. (str "Working on " group-id) e)))))
 
 (defn groups-view []

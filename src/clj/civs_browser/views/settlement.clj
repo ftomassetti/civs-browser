@@ -18,11 +18,16 @@
     [civs-browser.views.basic :refer :all])
   (:gen-class))
 
+(defn- label [settlement-id]
+  (let [name (settlement-name history settlement-id)
+        label (if (= :unnamed name) (str "Settlement " settlement-id) name)]
+    label))
+
 (defn- li-per-settlement [settlement-id]
   [:li
     [:span (link-to
              (str "settlement/" settlement-id)
-             (str "Settlement " settlement-id " (" (first-turn-for-settlement history settlement-id)
+             (str (label settlement-id) " (" (first-turn-for-settlement history settlement-id)
                " - " (last-turn-for-settlement history settlement-id) " )"))]])
 
 (defn settlements-view []
@@ -51,8 +56,8 @@
       [:p "Here we will list the owners of the settlement"]
       )))
 
-(defn settlement-view [id]
-  (view-layout (str "Settlement " id)
-    (if (exist-settlement? history id)
-      (settlement-page-content id)
+(defn settlement-view [settlement-id]
+  (view-layout (label settlement-id)
+    (if (exist-settlement? history settlement-id)
+      (settlement-page-content settlement-id)
       [:p "This settlement does not exist"])))
