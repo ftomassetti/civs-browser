@@ -54,6 +54,8 @@
     (group-view (read-string id)))
   (GET "/settlements" []
     (settlements-view))
+  (GET ["/settlement/:id", :id #"[0-9]+"] [id]
+    (settlement-view (read-string id)))
   (GET ["/history/evolution.gif"] []
     (game-state-evolution)))
 

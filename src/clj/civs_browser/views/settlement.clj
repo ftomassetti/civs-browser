@@ -21,7 +21,7 @@
 (defn- li-per-settlement [settlement-id]
   [:li
     [:span (link-to
-             (str "settlment/" settlement-id)
+             (str "settlement/" settlement-id)
              (str "Settlement " settlement-id " (" (first-turn-for-settlement history settlement-id)
                " - " (last-turn-for-settlement history settlement-id) " )"))]])
 
@@ -40,3 +40,19 @@
       [:ul.settlements
        (for [settlement-id settlements-c]
          (li-per-settlement settlement-id))])))
+
+(defn- settlement-page-content [id]
+  (let [ft (first-turn-for-settlement history id)
+        lt (last-turn-for-settlement history id)
+        ts (sort (turns-in-which-settlement-is-populated history id))]
+    (list
+      [:p (str "Populated from " ft " to " lt)]
+      [:h2 "Ownership"]
+      [:p "Here we will list the owners of the settlement"]
+      )))
+
+(defn settlement-view [id]
+  (view-layout (str "Settlement " id)
+    (if (exist-settlement? history id)
+      (settlement-page-content id)
+      [:p "This settlement does not exist"])))
