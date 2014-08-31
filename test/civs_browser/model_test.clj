@@ -1,5 +1,6 @@
 (ns civs-browser.model-test
   (:require [clojure.test :refer :all]
+            [civs.model.history :refer :all]
             [civs-browser.core :refer :all]
             [civs-browser.model :refer :all]))
 
@@ -8,6 +9,8 @@
 ;#########################################
 ; Turns
 ;#########################################
+
+; TODO move these tests in Civs
 
 (deftest test-n-turns
   (is (= 100 (n-turns my-history))))

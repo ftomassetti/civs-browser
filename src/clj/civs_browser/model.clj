@@ -9,6 +9,7 @@
     [clojure.string :as string]
     [civs.io :refer :all]
     [civs.model.core :refer :all]
+    [civs.model.history :refer :all]
     [civs-browser.basic :refer :all]
     [clojure.edn :as edn]
     [clojure.set :refer [union]])
@@ -18,25 +19,13 @@
 ; Turns
 ;#########################################
 
-(defn n-turns [history]
-  (.size (keys (:facts history))))
-
-(defn turns
-  ([] (turns history))
-  ([history] (sort (keys (:game-snapshots history)))))
-
-(defn exist-turn? [history turn]
-  (not (nil? (some #{turn} (turns history)))))
 
 ;#########################################
 ; Game
 ;#########################################
 
-(defn game-at [history turn]
-  (get (:game-snapshots history) turn))
-
 (defn ordered-games []
-  (map (fn [t] (get (:game-snapshots history) t)) (turns)))
+  (map (fn [t] (get (:game-snapshots history) t)) (turns history)))
 
 ;#########################################
 ; World
@@ -54,12 +43,6 @@
 ;#########################################
 ; Groups
 ;#########################################
-
-(defn groups-ids-in-game [game]
-  (into #{} (keys (:tribes game))))
-
-(defn group-at [history turn group-id]
-  (get (:tribes (game-at history turn)) group-id))
 
 (defn turns-in-which-group-is-alive [history group-id]
   (sort (filter

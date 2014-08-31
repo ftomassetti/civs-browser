@@ -12,6 +12,7 @@
     [civs.io :refer :all]
     [clojure.edn :as edn]
     [civs.model.core :refer :all]
+    [civs.model.history :refer :all]
     [civs.logic.demographics :refer :all]
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
@@ -73,7 +74,7 @@
 (defn world-pop-plot []
   (response-png-image-from-bytes
     (plot-bytes
-      (line-chart (turns) (popdata)))))
+      (line-chart (turns history) (popdata)))))
 
 (defn- game-state-page-content [turn]
   [:p "A Fantastic turn!"])
@@ -119,7 +120,7 @@
       img)))
 
 (defn- game-state-evolution-image []
-  (let [frames (map #(write-turn-in-image (game-state-map-image (get (:game-snapshots history) %) %) %) (turns))]
+  (let [frames (map #(write-turn-in-image (game-state-map-image (get (:game-snapshots history) %) %) %) (turns history))]
     (build-animated-gif 300 0 frames)))
 
 (defn game-state-evolution []

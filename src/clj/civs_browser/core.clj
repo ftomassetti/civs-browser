@@ -9,6 +9,7 @@
     [clojure.string :as string]
     [civs.io :refer :all]
     [civs.model.core :refer :all]
+    [civs.model.history :refer :all]
     [clojure.edn :as edn]
     [civs-browser.basic :refer :all]
     [civs-browser.model :refer :all]
